@@ -38,7 +38,8 @@ func main() {
 	app.Name = "ifc"
 	app.Usage = "interface configuration of docker container"
 	app.Version = "0.1.0"
-	app.ArgsUsage = "ifc"
+	app.ArgsUsage = ""
+	app.UsageText = "ifc [global options]"
 	app.Copyright = "Copyright (c) 2020 tenfy"
 	app.Compiled = time.Now()
 	app.Authors = []cli.Author{
