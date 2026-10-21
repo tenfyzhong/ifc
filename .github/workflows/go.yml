@@ -1,0 +1,32 @@
+name: Go
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    env:
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: .go-version
+      - name: Verify patched compiler
+        run: test "$(go env GOVERSION)" = "go$(cat .go-version)"
+      - name: Test
+        run: go test -mod=readonly -race ./...
+      - name: Vet
+        run: go vet -mod=readonly ./...
+      - name: Rebuild and verify executable
+        run: |
+          go build -mod=readonly -trimpath -o ifc .
+          go version -m ./ifc
+          test "$(go version -m ./ifc | head -n 1 | awk '{print $2}')" = "go$(cat .go-version)"
+          ./ifc --help
